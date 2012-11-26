@@ -1,6 +1,6 @@
 # repository-locator
 
-This tool locates git and SVN repositories, and outputs their origins.
+This tool locates git, SVN and CVS repositories, and outputs their origins.
 
 
 ## Usage

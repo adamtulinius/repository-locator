@@ -6,11 +6,11 @@ else
 	dir="$1"
 fi
 
-echo "Looking for git and svn repositories in $dir ..."
+echo "Looking for git, svn and cvs repositories in $dir ..."
 
 repositories=""
 
-for dir in $(find $1 -type d -name "\.svn" -o -name "\.git"); do
+for dir in $(find $1 -type d -name "\.svn" -o -name "\.git" -o -name "CVS"); do
 	dirBasename=$(basename $dir)
 	if [ "$dirBasename" == ".git" ]; then
 		remotes=$(git --git-dir=$dir remote -v | grep ^origin)
@@ -23,6 +23,11 @@ for dir in $(find $1 -type d -name "\.svn" -o -name "\.git"); do
 	elif [ "$dirBasename" == ".svn" ]; then
 		echo "Found svn repository in $dir"
 		repositories="$repositories$(svn info $(dirname $dir) | grep ^URL | cut -d " " -f2)\\n"
+	elif [ "$dirBasename" == "CVS" ]; then
+		if [ -e "$dir/Root" ]; then
+			echo "Found CVS repository in $dir"
+			repositories="$repositories"$(cat $dir/Root)"\\n"
+		fi
 	fi
 done
 
